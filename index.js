@@ -79,7 +79,11 @@ async function processServersInBatches(servers, batchSize) {
 
 async function fetchServerResources(server) {
     console.log(`Fetching resources for server ${server.attributes.identifier}`);
-    const response = await apiClient.get(`/api/client/servers/${server.attributes.identifier}/resources`);
+    const response = await apiClient.get(`/api/client/servers/${server.attributes.identifier}/resources`, {
+        params: {
+            'include': 'egg',
+        },
+    });
     const { attributes } = response.data;
     const serverId = server.attributes.identifier;
     const serverName = server.attributes.name;
