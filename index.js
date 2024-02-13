@@ -90,7 +90,7 @@ async function fetchServerResources(server) {
     const ramLimit = limits.memory;
 
     cpuUsageGauge.labels(serverId, serverName, node).set(attributes.resources.cpu_absolute / cpuLimit * 100);
-    ramUsageGauge.labels(serverId, serverName, node).set(attributes.resources.memory_bytes / ramLimit * 1024 * 1024 * 1024);
+    ramUsageGauge.labels(serverId, serverName, node).set(attributes.resources.memory_bytes / ramLimit * 100);
     diskUsageGauge.labels(serverId, serverName, node).set(attributes.resources.disk_bytes / limits.disk * 1024 * 1024 * 1024);
     networkRxGauge.labels(serverId, serverName, node).set(attributes.resources.network_rx_bytes);
     networkTxGauge.labels(serverId, serverName, node).set(attributes.resources.network_tx_bytes);
