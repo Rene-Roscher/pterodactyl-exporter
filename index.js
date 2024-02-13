@@ -88,7 +88,6 @@ async function fetchServerResources(server) {
     const limits = server.attributes.limits;
     const cpuLimit = limits.cpu;
     const ramLimit = limits.memory;
-    console.log(server.attributes)
     const eggName = server.attributes.relationships.egg.attributes.name || 'unknown egg';
 
     cpuUsageGauge.labels(serverId, serverName, node, eggName).set(attributes.resources.cpu_absolute / cpuLimit * 100);
