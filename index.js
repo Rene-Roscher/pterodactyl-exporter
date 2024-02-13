@@ -14,27 +14,27 @@ const apiClient = axios.create({
 const cpuUsageGauge = new Gauge({
     name: 'server_cpu_usage',
     help: 'CPU usage of the server in percent',
-    labelNames: ['server_id', 'server_name', 'node'],
+    labelNames: ['server_id', 'server_name', 'node', 'egg_name'],
 });
 const ramUsageGauge = new Gauge({
     name: 'server_ram_usage',
     help: 'RAM usage of the server in bytes',
-    labelNames: ['server_id', 'server_name', 'node'],
+    labelNames: ['server_id', 'server_name', 'node', 'egg_name'],
 });
 const diskUsageGauge = new Gauge({
     name: 'server_disk_usage',
     help: 'Disk usage of the server in bytes',
-    labelNames: ['server_id', 'server_name', 'node'],
+    labelNames: ['server_id', 'server_name', 'node', 'egg_name'],
 });
 const networkRxGauge = new Gauge({
     name: 'server_network_rx',
     help: 'Network received by the server in bytes',
-    labelNames: ['server_id', 'server_name', 'node'],
+    labelNames: ['server_id', 'server_name', 'node', 'egg_name'],
 });
 const networkTxGauge = new Gauge({
     name: 'server_network_tx',
     help: 'Network transmitted by the server in bytes',
-    labelNames: ['server_id', 'server_name', 'node'],
+    labelNames: ['server_id', 'server_name', 'node', 'egg_name'],
 });
 
 async function fetchServersWithPagination() {
@@ -88,12 +88,13 @@ async function fetchServerResources(server) {
     const limits = server.attributes.limits;
     const cpuLimit = limits.cpu;
     const ramLimit = limits.memory;
+    const eggName = server.attributes.relationships.egg.attributes.name || 'unknown egg';
 
-    cpuUsageGauge.labels(serverId, serverName, node).set(attributes.resources.cpu_absolute / cpuLimit * 100);
-    ramUsageGauge.labels(serverId, serverName, node).set(attributes.resources.memory_bytes / ramLimit * 100);
-    diskUsageGauge.labels(serverId, serverName, node).set(attributes.resources.disk_bytes / limits.disk * 1024 * 1024 * 1024);
-    networkRxGauge.labels(serverId, serverName, node).set(attributes.resources.network_rx_bytes);
-    networkTxGauge.labels(serverId, serverName, node).set(attributes.resources.network_tx_bytes);
+    cpuUsageGauge.labels(serverId, serverName, node, eggName).set(attributes.resources.cpu_absolute / cpuLimit * 100);
+    ramUsageGauge.labels(serverId, serverName, node, eggName).set((attributes.resources.memory_bytes / 1024 / 1024) / ramLimit * 100);
+    diskUsageGauge.labels(serverId, serverName, node, eggName).set((attributes.resources.disk_bytes / 1024 / 1024) / limits.disk * 100);
+    networkRxGauge.labels(serverId, serverName, node, eggName).set(attributes.resources.network_rx_bytes);
+    networkTxGauge.labels(serverId, serverName, node, eggName).set(attributes.resources.network_tx_bytes);
 }
 
 app.get('/metrics', async (req, res) => {
