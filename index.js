@@ -47,6 +47,7 @@ async function fetchServersWithPagination() {
             params: {
                 'page': currentPage,
                 'per_page': 150,
+                'include': 'egg',
             },
         });
         const servers = response.data.data;
@@ -79,7 +80,7 @@ async function processServersInBatches(servers, batchSize) {
 
 async function fetchServerResources(server) {
     console.log(`Fetching resources for server ${server.attributes.identifier}`);
-    const response = await apiClient.get(`/api/client/servers/${server.attributes.identifier}/resources?include=egg`);
+    const response = await apiClient.get(`/api/client/servers/${server.attributes.identifier}/resources`);
     const { attributes } = response.data;
     const serverId = server.attributes.identifier;
     const serverName = server.attributes.name;
