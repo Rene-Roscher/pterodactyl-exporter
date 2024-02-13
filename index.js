@@ -72,7 +72,7 @@ function chunkArray(array, chunkSize) {
 async function processServersInBatches(servers, batchSize) {
     const serverBatches = chunkArray(servers, batchSize);
     for (const batch of serverBatches) {
-        const promises = batch.map(server => fetchServerResources(server).catch((error) => console.error('Error: ', server.attributes.identifier)));
+        const promises = batch.map(server => fetchServerResources(server).catch(() => console.error('Error: ', server.attributes.identifier)));
         await Promise.all(promises);
     }
 }
